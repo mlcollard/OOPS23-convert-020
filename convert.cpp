@@ -30,16 +30,19 @@ void outputText(const std::string& s) {
 typedef void(*Conversion)(char& c);
 
 // apply a function to each element in the range of the string [begin, end)
+// @concerns std::string, iterator, convert
 void myforeach(std::string::iterator begin, std::string::iterator end, Conversion convert) {
 
     for (auto pc = begin; pc != end; ++pc)
         convert(*pc);
 }
 
+// @concern std::toupper(), upper[out]
 void upper(char& c) {
     c = std::toupper(c);
 }
 
+// @concern std::tolower(), lower[out]
 void lower(char& c) {
     c = std::tolower(c);
 }
@@ -63,7 +66,7 @@ int main(int argc, char* argv[]) {
 
     // convert the string according to the option
     // @concerns option, text, "--upper", "--lower"
-    // @concerns std::string, std::toupper(), std::tolower(), iteration
+    // @concerns std::string, upper, lower, myforeach
     // @concerns error handling, std::cerr
     if (option == "--upper") {
 
