@@ -13,6 +13,7 @@
 #include <string>
 #include <cctype>
 #include <algorithm>
+#include <unordered_map>
 
 // output character
 // @concerns output format, std::cout, output[out]
@@ -32,6 +33,13 @@ void lower(char& c) {
     c = std::tolower(c);
 }
 
+// option to conversion mapping
+// @concerns "--upper", "--lower", upper, lower, conversionOption[out]
+const std::unordered_map<std::string, Conversion> conversionOption{
+    { "--upper", upper },
+    { "--lower", lower },
+};
+
 int main(int argc, char* argv[]) {
 
     // requires conversion option and string
@@ -50,23 +58,15 @@ int main(int argc, char* argv[]) {
     std::string text(argv[2]);
 
     // maps from the option name to a conversion function
-    // @concerns option, text, "--upper", "--lower"
-    // @concerns std::string, upper, lower, Conversion, convert[out]
+    // @concerns option, conversionOption
+    // @concerns std::string, Conversion, convert[out]
     // @concerns error handling, std::cerr
-    Conversion convert = nullptr;
-    if (option == "--upper") {
-
-        convert = upper;
-
-    } else if (option == "--lower") {
-
-        convert = lower;
-
-    } else {
-
+    auto conversionEntry = conversionOption.find(option);
+    if (conversionEntry == conversionOption.end()) {
         std::cerr << "Invalid conversion option: " << option << '\n';
         return 1;
     }
+    const Conversion convert = conversionEntry->second;
 
     // convert the text according to the conversion function
     // @concerns text, std::for_each, convert
